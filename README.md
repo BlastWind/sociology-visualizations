@@ -1,3 +1,3 @@
 # sociology-visualizations
 
-Updated readme for testing purposes
+Inspired by puddle ai. https://pudding.cool/2022/02/women-in-headlines/
