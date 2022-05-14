@@ -6,6 +6,8 @@ import {
 } from "./data";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { scaleQuantile } from "d3-scale";
+import React, { useContext, useEffect, useState } from "react";
+import ReactTooltip from "react-tooltip";
 
 const removePhraseFrom = (str: string, phrase: string) => {
   return str.replace(phrase, "");
@@ -111,6 +113,8 @@ export const ChoroplethChart = <
   compProp,
   colorRange,
 }: StateChoroplethChartProps<T, K>) => {
+  const setToolTipContent = useContext(ToolTipContext);
+
   const minVal = data.reduce(
     (prevItem, curItem) =>
       curItem[compProp] < prevItem ? curItem[compProp] : prevItem,
@@ -126,7 +130,12 @@ export const ChoroplethChart = <
   const colorScale = scaleQuantile().domain([minVal, maxVal]).range(colorRange);
 
   return (
-    <ComposableMap projection="geoAlbersUsa" width={1000} height={1000}>
+    <ComposableMap
+      data-tip=""
+      projection="geoAlbersUsa"
+      width={1000}
+      height={1000}
+    >
       <Geographies geography={geoUrl}>
         {({ geographies }) => (
           <>
@@ -139,6 +148,15 @@ export const ChoroplethChart = <
                   key={geo.rsmKey}
                   stroke="#FFF"
                   geography={geo}
+                  onMouseEnter={() => {
+                    console.log("set it?");
+                    setToolTipContent(
+                      `${geo.properties.name}: ${cur[compProp]}`
+                    );
+                  }}
+                  onMouseLeave={() => {
+                    setToolTipContent("");
+                  }}
                   fill={
                     cur && cur[compProp]
                       ? String(colorScale(cur[compProp]))
@@ -151,5 +169,67 @@ export const ChoroplethChart = <
         )}
       </Geographies>
     </ComposableMap>
+  );
+};
+
+export enum ChartIds {
+  Health = "health",
+  Income = "income",
+  Wealth = "wealth",
+  Hospital = "hospital-quality-index",
+}
+
+const ToolTipContext = React.createContext(null);
+
+export const Charts = ({ id }: { id: ChartIds }) => {
+  const [ID, setID] = useState(id);
+  const [toolTipContent, setToolTipContent] = useState("");
+  useEffect(() => {
+    ReactTooltip.rebuild();
+  }, [ID]);
+
+  console.log({ toolTipContent });
+
+  let current: JSX.Element;
+  switch (ID) {
+    case "health":
+      current = <LifeByStateChart />;
+      break;
+    case "income":
+      current = <IncomeByStateChart />;
+      break;
+    case "wealth":
+      current = <WealthByStateChart />;
+      break;
+    case "hospital-quality-index":
+      current = <HospitalChart />;
+  }
+  return (
+    <>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", gap: "10px" }}>
+          {[
+            ChartIds.Income,
+            ChartIds.Wealth,
+            ChartIds.Health,
+            ChartIds.Hospital,
+          ].map((id) => (
+            <button
+              key={id}
+              onClick={() => {
+                setID(id);
+              }}
+              style={{ fontWeight: id === ID ? "bold" : "inherit" }}
+            >
+              {id}
+            </button>
+          ))}
+        </div>
+        <ToolTipContext.Provider value={setToolTipContent}>
+          {current}
+        </ToolTipContext.Provider>
+      </div>
+      <ReactTooltip>{toolTipContent}</ReactTooltip>
+    </>
   );
 };
