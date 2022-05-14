@@ -355,7 +355,7 @@ function App() {
       <button
         onClick={() => {
           window.open(
-            "https://github.com/BlastWind/sociology-visualizations",
+            "https://github.com/BlastWind/sociology-visualizations/tree/main/src/citations",
             "_blank",
             "noopener"
           );
