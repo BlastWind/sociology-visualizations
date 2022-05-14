@@ -149,7 +149,6 @@ export const ChoroplethChart = <
                   stroke="#FFF"
                   geography={geo}
                   onMouseEnter={() => {
-                    console.log("set it?");
                     setToolTipContent(
                       `${geo.properties.name}: ${cur[compProp]}`
                     );
@@ -191,8 +190,6 @@ export const Charts = ({ id }: { id: ChartIds }) => {
   useEffect(() => {
     setID(id);
   }, [id]);
-
-  console.log({ toolTipContent });
 
   let current: JSX.Element;
   switch (ID) {

@@ -57,9 +57,6 @@ const useFirstIntersect = (ids: string[]) => {
 };
 
 const Figure = ({ id }: { id: string }) => {
-  useEffect(() => {
-    fetch("/data/income-by-state-2020.json").then(console.log);
-  }, []);
   switch (id) {
     case "life-expectancy":
       return <img width="100%" src={LifeExpectancyImage} />;
