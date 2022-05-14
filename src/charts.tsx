@@ -188,6 +188,10 @@ export const Charts = ({ id }: { id: ChartIds }) => {
     ReactTooltip.rebuild();
   }, [ID]);
 
+  useEffect(() => {
+    setID(id);
+  }, [id]);
+
   console.log({ toolTipContent });
 
   let current: JSX.Element;
