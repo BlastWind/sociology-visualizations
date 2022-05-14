@@ -16,8 +16,15 @@ import {
   Legend,
   Line,
 } from "recharts";
-import RussianLifeExpectancy from "./data/russian-men-vs-women-life-expectancy.js";
+import RussianLifeExpectancy from "./data/russian-men-vs-women-life-expectancy";
 import { TwitterTweetEmbed } from "react-twitter-embed";
+import {
+  HospitalChart,
+  IncomeByStateChart,
+  LifeByStateChart,
+  WealthByStateChart,
+} from "./charts";
+import { LifeExpectancyByState } from "./data";
 
 const useFirstIntersect = (ids) => {
   const [intersectionIds, setIntersectionIds] = useState(
@@ -45,7 +52,6 @@ const useFirstIntersect = (ids) => {
     )
   );
   useEffect(() => {
-    console.log(document.getElementById("income-paragraph"));
     ids.forEach((id) => observer.current.observe(document.getElementById(id)));
   }, [ids]);
 
@@ -53,7 +59,6 @@ const useFirstIntersect = (ids) => {
 };
 
 const Figure = ({ id }) => {
-  console.log({ id });
   switch (id) {
     case "life-expectancy":
       return <img width="100%" src={LifeExpectancyImage} />;
@@ -73,14 +78,15 @@ const Figure = ({ id }) => {
       );
     case "income":
       return (
-        <iframe width="100%" height="100%" src="http://www.justicemap.org/" />
+        // <iframe width="100%" height="100%" src="http://www.justicemap.org/" />
+        <IncomeByStateChart />
       );
     case "wealth":
-      return <img width="100%" src={WealthMap} />;
+      return <WealthByStateChart />;
     case "health":
-      return <img width="100%" src={HealthMap} />;
+      return <LifeByStateChart />;
     case "hospital-quality-index":
-      return <img width="100%" src={HospitalIndexImage} />;
+      return <HospitalChart />;
 
     case "no-great-equalizer-2":
     case "no-great-equalizer":
@@ -122,94 +128,98 @@ function App() {
         <div className="scroll-container-inner">
           <div className="scroll-text-container">
             <div id="life-expectancy" className="text-paragraph">
-              When evaluating the health of a population, my mind first goes to
-              life expectancy. I pop up an average life expectancy graph of
-              developed countries, expecting Japan to be on top, America to be
-              somewhere in the middle amongst all developed countries, and China
-              to be near the bottom. <br /> And I am correct. Except, America
-              ranks a bit further down, and is only 28 out of the 37 OECD
-              countries, and China still counts as a developing country.
+              When I first started thinking critically about population health,
+              my mind first goes to hard, cold metrics like life expectancy. I
+              pop up an average life expectancy graph of developed countries,
+              expecting Japan to be on top, America to be somewhere in the
+              middle amongst all developed countries, and China to be near the
+              bottom. <br /> And I am correct. Except, America ranks a bit
+              further down, and is only 28 out of the 37 OECD countries, and
+              China still counts as a developing country.
             </div>
             <div id="russia" className="text-paragraph">
               With a bit more curiosity , I open up a few new tabs, accidentally
-              surfing data on life expectancy with regards to{" "}
+              surfing data on life expectancy with regards to
               <a style={{ fontWeight: "bold" }}>sex </a>
               amongst countries. These results show that even today, Russian men
               are expected to live a whole decade shorter than Russian women.
-              Now that I see comparisons between social groups in one national
-              population, my mind starts searching for answers. Vodka? Hmm, that
-              might be a part of it. Men just doing stupid things? Well, there
-              will never be a “near death experience montage” on Youtube whose
-              main features aren’t Russian men. But why is infant mortality rate
-              gendered in Russia as well?
+              This statistic prompted me in thinking about the reason of
+              durastic differences between groups in one nation. Vodka? Hmm,
+              that might be a part of it. Men just doing stupid things? Well,
+              there will never be a “near death experience montage” on Youtube
+              whose main characters aren’t Russian men, and researches cite
+              "hypermasculinity" as health damaging. But say, grown men doing
+              stupid things is the cause, then why is infant mortality rate
+              gendered (favoring female over male) in Russia as well [1]?
             </div>
             <div id="" className="text-paragraph">
-              In addition to cultural beliefs and folk traditions, there’s gotta
-              be more to the whole story.
+              The Russian question is merely a thought exercise, today's main
+              focus is health inequties in the US. As we move through this
+              discussion, keep one question in mind:
+              <a style={{ fontWeight: "bold" }}>
+                What are the utilities a human life deserve?
+              </a>
               <br />
-              Together now, let's look at more data, hold constant different
-              traditional health determinants, and examine their effects on
-              different social groups.
+              Together now, let's look at data confirming US inequities and
+              explanatory frameworks, before I offer some larger solutions.
             </div>
             <div id="income" className="text-paragraph">
               <a style={{ fontWeight: "bold", fontSize: "25px" }}>
                 Chapter 1: Definitions and Data
               </a>
               <div style={{ fontStyle: "italic", fontSize: "22px" }}>
-                Data 1: Income map
+                Data 1: Income map [2]
               </div>
-              The richest county, Loudoun VA, has an astounding average income
-              of 136k. On the other hand, todd south dakota has an average
-              income of 24k. That’s a five-point-six fold difference, rounding
-              down. But a more general pattern emerges. The South is very
-              evidently poorer. Strips of blue appear often not in connection
-              with other blue strips. There actually occurs quite some sudden
-              drastic shifts (from darker red to darker blue), although more
-              changes occur in gradient.
+              On <a href="http://www.justicemap.org/">Justice Map,</a>
+              &nbsp;we see that the richest county, Loudoun VA, has an
+              astounding average income of 136k. On the other hand, todd south
+              dakota has an average income of 24k. That’s a five-point-six fold
+              difference, rounding down. But a more general pattern emerges. The
+              South is very evidently poorer. Strips of blue appear often not in
+              connection with other blue strips. There actually occurs quite
+              some sudden drastic shifts (from darker red to darker blue),
+              although more changes occur in gradient.
+              <div>
+                On the interactive map to the right, we see income distribution
+                by state (the redder, the lower the income).
+              </div>
             </div>
             <div id="wealth" className="text-paragraph">
               <div style={{ fontStyle: "italic", fontSize: "22px" }}>
-                Data 2: Wealth map
+                Data 2: Wealth map [3]
               </div>
-              The richest county, Loudoun VA, has an astounding average income
-              of 136k. On the other hand, todd south dakota has an average
-              income of 24k. That’s a five-point-six fold difference, rounding
-              down. But a more general pattern emerges. The South is very
-              evidently poorer. Strips of blue appear often not in connection
-              with other blue strips. There actually occurs quite some sudden
-              drastic shifts (from darker red to darker blue), although more
-              changes occur in gradient.
+              Wealth follows the trend of income, which makes sense, wealth is
+              at its core, the accumulation of cross generational income. But
+              pan your mouse around the map and notice the larger differences.
             </div>
             <div id="health" className="text-paragraph">
               <div style={{ fontStyle: "italic", fontSize: "22px" }}>
-                Data 3: Health map
+                Data 3: Health map [4]
               </div>
-              The health map follows the general patterns of the wealth and
-              income map. Therefore, there’s a connection between wealth and
-              health. Is this connection causal? Common sense says yes, and
-              sociologists say so too.
+              The health map (using life expectancy) follows the general
+              patterns of the wealth and income map. Therefore, there’s a
+              connection between wealth and health. Is this connection causal?
+              Common sense says yes, and sociologists say so too.
             </div>
             <div id="hospital-quality-index" className="text-paragraph">
               <div style={{ fontStyle: "italic", fontSize: "22px" }}>
-                Data 4: Hospital Quality Index map
+                Data 4: Hospital Quality Index map [5]
               </div>
               There's a connection to the wealth graph, again.
               <br />
-              But why should this be the case? Income and wealth is an micro or
-              meso level measurement. Health is too a lower level measurement.
-              But here, Hospital Index is a macro (institutional) level
-              measurement. Yet we continue see the same pattern. This is
-              institutional health inequity. If you are poor, you aren’t treated
-              the same.
+              Income, wealth, and health are individual based measurements. But,
+              Hospital Index is an institutional level measurement. Yet we
+              continue to see the same pattern. This is institutional health
+              inequity. If you are poor, you aren’t treated the same. Why should
+              this be the norm?
               <br />
               Should the highest bidder win? On Ebay, yes. But what if you are
               bidding on your health? Bidding on arriving at a trustworthy,
-              readily supplied hospital on time when your pregnant wife’s water
-              breaks?
+              readily supplied hospital in case of emergencies?
               <br />
               <a style={{ fontWeight: "bold" }}>
-                Is the enjoyment of the highest attainable standard of health a
-                human right?
+                Isn't the enjoyment of the highest attainable standard of health
+                a human right?
               </a>
             </div>
             <div id="frameworks-intro" className="text-paragraph">
@@ -221,21 +231,19 @@ function App() {
                 improve their health. But furthermore, those with ample SES are
                 still subjected to the effects of relative poverty. These two
                 statements are encapsulated in the FCT (fundamental cause
-                theorem) and social gradient frameworks. The FCT frames, what I
-                would say, is unfortunately common sense (unfortunate in that
-                health does not appear to be a fundamental right in America).
-                But the "social gradient" framework also observes the following
-                baffling result: Not only are people subjected to relative
-                poverty, but health forms a linear relationship with SES.
-                Marmot, the coiner of "social gradient", uses autonomy to
-                explain this result: We want to be the champions of our fate.
-                The less others have control over us, the healthier we are. Of
-                course, that the lower your SES, the more likely you have
-                superiors and more stress that makes you feel less in control.
-                Biologists study the physical health consequences of stress. But
-                sociologists also observe that stress in turn cuts away time and
-                opportunities to, for example, go for a health checkup,
-                exercise, etc.
+                theorem) and the social gradient frameworks [6,7]. The FCT
+                states an unfortunately common sense fact. But the "social
+                gradient" framework also observes the following baffling result:
+                Not only are people subjected to relative poverty, but health
+                forms a linear relationship with SES. Marmot, the coiner of
+                "social gradient", uses autonomy to explain this result: We want
+                to be the champions of our fate. The less others have control
+                over us, the healthier we are. Of course, the lower your SES,
+                the more likely you have superiors, stress, and less control.
+                Biologists study the physical health consequences of stress and
+                allostatic load [8]. But sociologists also observe that stress
+                in turn cuts away time and opportunities to, for example, go for
+                a health checkup, exercise, etc.
               </div>
             </div>
             <div id="income-paragraph" className="text-paragraph">
@@ -248,10 +256,10 @@ function App() {
                 in the word “fundamental” is a sense of staticness. One of the
                 flaws of FCT, evident in sociology research, is the implication
                 that progress can’t be made because social stratification is
-                also unchangeable.
+                also unchangeable [9].
                 <br />
-                That's why I challenged us to question the fairness of the
-                Hospital Index Map.
+                We must, however, confront this seemingly unchangeable
+                stratification.
               </div>
             </div>
             <div id="no-great-equalizer" className="text-paragraph">
@@ -264,86 +272,76 @@ function App() {
                 question, the more upstream we try to solve a problem, the more
                 greed and bureaucracy tangled resistance there will be.
                 <br />
-                Furthermore, non-Asian racial minorities have significantly
-                lower SES. Not to mention that racial minorities fare worse than
-                their white counterparts even when other health determinants are
-                held constant. And, there is apparently no apparent equalizers
-                (employment, education) on wealth. [Show income, wealth in
-                regards to education]
+                How do we even fix SES? SES in the states relates intimately
+                with race. Non-Asian racial minorities have significantly lower
+                SES, not to mention that racial minorities fare worse in health
+                than their white counterparts even when other health
+                determinants are held constant. And, apparently in the two
+                graphs to the right, there is no apparent equalizers
+                (employment, education) on wealth.
               </div>
             </div>
             <div id="no-great-equalizer-2" className="text-paragraph">
               <div>
-                Personally, I believe addressing wealth and education should be
-                the priority.
+                I am an "upstream" guy, and I believe in addressing wealth and
+                education should be the priority, and that in turn, they can
+                balance health inequities. I believe this for two reasons: 1)
+                Health is merely a reflection of relative SES (5.1% of all
+                deaths can be attributed to income inequality, 7.5% to racial
+                segregation, 11.4% to low education for 25-64 year olds) [10].
+                2) SES solves other problems. The Acheson Inquiry, similarily,
+                suggest that the main area to focus in reducing health
+                inequities to be Early child development and education [11].
+                Other areas include work environments, building healthy
+                communities and supporting active social engagement of older
+                people.
                 <br />
-                First, on wealth: Although the top 1% owns 18% of the income
-                (fact check this), they own anywhere from 37% - 48% of the
-                wealth. Studies show that one of the potential factors for
-                health equity in OECD countries is wealth taxation. Wealth
-                taxation may have a redistributive effect, reducing wealth
-                inequality, increasing investments in social programs, and
-                potentially contributing to better health outcomes. Wealth
-                taxations usually come in the form of inheritance, gifting, and
-                estate tax.
+                First, let's address wealth. Here are the stats: Although the
+                top 1% owns 18% of the income, they own anywhere from 37% - 48%
+                of the wealth [13]. Studies show that one of the potential
+                factors for health equity in OECD countries is wealth taxation.
+                Wealth taxation may have a redistributive effect, reducing
+                wealth inequality, increasing investments in social programs,
+                and potentially contributing to better health outcomes. And
+                indeed, the most equal OECD countries have the strongest wealth
+                tax, Wealth taxations usually come in the form of inheritance,
+                gifting, and estate tax. Thus, I am proposing wealth tax as the
+                fundamental way of rebalancing. I am not a number cruncher, but
+                I consider Elizabeth Warren's&nbsp;
+                <a href="https://2020.elizabethwarren.com/toolkit/umt">
+                  2 Cent Tax
+                </a>
+                &nbsp;Plan is a great step.
                 <br />
-                Now, on education: The "education is not the great equalizer"
-                graph from earlier looks so skewed for two reasons: 1) Education
-                here is not studied cross generations 2) Black families
-                historically have significantly lower wealth. At the end of the
-                day, the most significant way one can improve their outcomes in
-                to increase their education level. Our education system today is
+                Now, let's address education: Although the graphs paint
+                equalizing efforts as futile, it is "overdramatic" for two
+                reasons: 1) Education here is not studied cross generations, 2)
+                Black families historically have significantly lower wealth,
+                since wealth is also cross generational. At the end of the day,
+                the most significant way one can improve their outcomes is to
+                increase their education level. Our education system today is
                 inequitable: While high SES families see a 18% increase in
-                college graduation rates, low SES families only see 4%. Taxed
-                wealth should prioritize flowing into the education sector.
+                college graduation rates, low SES families only see 4% [13].
+                Taxed wealth should prioritize flowing into the education
+                sector, focusing on simulatenous, cross generational, low income
+                parent and child education.
               </div>
-            </div>
-            <div id="income-paragraph" className="text-paragraph">
-              <a style={{ fontWeight: "bold", fontSize: "25px" }}>
-                Aside 1: Collection of interesting finding I have yet to
-                synthesize
-              </a>
-              <ul>
-                <li>
-                  Stress management, as indicated with the 40% of american using
-                  these stress managements tactics in 2010 fact.
-                </li>
-                <li>
-                  The Acheson Inquiry made 39 recommendations, with 4 main
-                  areas: Early child development and education, work
-                  environments, building healthy communities and supporting
-                  active social engagement of older people.
-                </li>
-                <li>
-                  As suggested in many works like Guns, Germs, and Steel and
-                  Robert Gordon's article, germs gave civilizations a chance to
-                  grow and be better. And today, we are ironically taking these
-                  chances away from poorer countries.
-                </li>
-                <li>
-                  The most equal OECD countries have the strongest wealth tax.
-                </li>
-                <li>
-                  5.1% of all deaths can be attributed to income inequality,
-                  7.5% to racial segregation, 11.4% to low education for 25-64
-                  year olds.
-                </li>
-              </ul>
-            </div>
-            <div id="income-paragraph" className="text-paragraph">
-              <a style={{ fontWeight: "bold", fontSize: "25px" }}>
-                Aside 2: What I lacked in addressing
-              </a>
-              <div>Intersectionality.</div>
             </div>
             <div id="class-or-culture" className="text-paragraph">
               <a style={{ fontWeight: "bold", fontSize: "25px" }}>
-                Aside 3: Class or Culture?
+                Aside 1: Class vs Culture?
               </a>
               <div>
-                1) Which one should we be fighting first?
-                <br />
-                2) Who is/is there a "they"?
+                In my writeup, I didn't mention enough about race, gender, and
+                inequities in regards to intersectionality. But that's because I
+                feel the need to end with the following question, and in
+                addressing the unfortunate racial and gender patterns, I
+                would've been too intimate with "culture", and therefore taint
+                your gut reaction.
+                <a style={{ fontWeight: "bold", fontSize: "18px" }}>
+                  &nbsp;Are we fighting a culture war when we should be fighting
+                  a class war?
+                </a>
               </div>
             </div>
           </div>
@@ -363,7 +361,7 @@ function App() {
           );
         }}
       >
-        Source code
+        Source Code And Citations
       </button>
     </div>
   );

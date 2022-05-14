@@ -1,4 +1,4 @@
-const data = [
+const RussianLifeExpectancyByGender = [
   {
     year: 2009,
     female: 74.79,
@@ -56,4 +56,4 @@ const data = [
   },
 ];
 
-export default data;
+export default RussianLifeExpectancyByGender;
