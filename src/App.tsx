@@ -1,8 +1,5 @@
 import "./App.css";
-import WealthMap from "./images/screen-shot-2015-10-04-at-4-09-29-pm.webp";
 import LifeExpectancyImage from "./images/life-expectancy.png";
-import HospitalIndexImage from "./images/HPSAPC.png";
-import HealthMap from "./images/health-map.png";
 import EducationNotEqualizer from "./images/education-is-not-the-great-equalizer.png";
 import EmploymentNotEqualizer from "./images/employment-is-not-the-great-equalizer.png";
 import React, { useEffect, useState, useRef } from "react";
@@ -19,14 +16,15 @@ import {
 import RussianLifeExpectancy from "./data/russian-men-vs-women-life-expectancy";
 import { TwitterTweetEmbed } from "react-twitter-embed";
 import {
+  ChartIds,
+  Charts,
   HospitalChart,
   IncomeByStateChart,
   LifeByStateChart,
   WealthByStateChart,
 } from "./charts";
-import { LifeExpectancyByState } from "./data";
 
-const useFirstIntersect = (ids) => {
+const useFirstIntersect = (ids: string[]) => {
   const [intersectionIds, setIntersectionIds] = useState(
     ids.map((id) => {
       return { id: id, isIntersecting: false };
@@ -58,7 +56,7 @@ const useFirstIntersect = (ids) => {
   return intersectionIds.find((ele) => ele.isIntersecting)?.id;
 };
 
-const Figure = ({ id }) => {
+const Figure = ({ id }: { id: string }) => {
   useEffect(() => {
     fetch("/data/income-by-state-2020.json").then(console.log);
   }, []);
@@ -79,10 +77,13 @@ const Figure = ({ id }) => {
           </LineChart>
         </ResponsiveContainer>
       );
-    case "income":
+    case ChartIds.Income:
+    case ChartIds.Wealth:
+    case ChartIds.Health:
+    case ChartIds.Hospital:
       return (
         // <iframe width="100%" height="100%" src="http://www.justicemap.org/" />
-        <IncomeByStateChart />
+        <Charts id={id} />
       );
     case "wealth":
       return <WealthByStateChart />;
@@ -123,6 +124,7 @@ function App() {
     "no-great-equalizer-2",
     "class-or-culture",
   ]);
+
   return (
     <div className="page">
       <div className="header">INEQUALITY FOR ALL</div>
